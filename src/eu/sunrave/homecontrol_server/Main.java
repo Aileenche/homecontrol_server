@@ -23,7 +23,7 @@ public class Main {
         varshandler = new varshandler();
         logger.init();
         Commands = new CommandHandler();
-
+/////////////////////////////////////////////////////
         webserver = new Webserver("Webserver");
         webserver.start();
 
