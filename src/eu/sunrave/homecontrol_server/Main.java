@@ -89,7 +89,9 @@ public class Main {
         }
 
         Main.logger.notice("Shutdown Server...");
-        webserver.stop();
+        if (!isserver) {
+            webserver.stop();
+        }
         System.exit(0);
     }
 }
