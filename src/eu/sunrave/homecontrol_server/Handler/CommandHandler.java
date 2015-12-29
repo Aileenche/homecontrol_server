@@ -1,5 +1,6 @@
 package eu.sunrave.homecontrol_server.Handler;
 
+import eu.sunrave.homecontrol_server.Libs.Functions;
 import eu.sunrave.homecontrol_server.Main;
 
 /**
@@ -50,11 +51,31 @@ public class CommandHandler {
                         Main.logger.con("Socketserver isRunning: " + Main.varshandler.socketserverIsRunning);
                         break;
                     case ("stop"):
-                        Main.socketServer.interrupt();
+                        Main.serverThread.interrupt();
                         break;
                     case ("start"):
-                        Main.socketServer.start();
+                        Main.serverThread.start();
                         break;
+                }
+                break;
+            case ("msg"):
+                String message = "";
+                for (int i = 1; i < presplit.length; i++) {
+                    message += " " + presplit[i];
+                }
+                if (Main.isserver) {
+                    for (int i = 0; i < Main.clientSockets.size(); i++) {
+                        Functions.SendMessage(message, Main.clientSockets.get(i));
+                    }
+                } else {
+                    Functions.SendMessage(message, Main.mainServerSocket);
+                }
+                break;
+            case ("rss"):
+                if (!Main.isserver) {
+                    Functions.SendMessage("rss", Main.mainServerSocket);
+                } else {
+                    Main.logger.debug("WARNING: this command can only be executed on a client");
                 }
                 break;
         }

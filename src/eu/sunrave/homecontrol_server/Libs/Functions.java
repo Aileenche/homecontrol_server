@@ -12,9 +12,9 @@ public class Functions {
     public static void SendMessage(String message, Socket socket) {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(message);
+            out.println(Main.identifier + " " + message);
         } catch (Exception e) {
-            Main.logger.debug("Error: message couldn't be sent to server");
+            Main.logger.debug("Error: message couldn't be sent");
         }
     }
 

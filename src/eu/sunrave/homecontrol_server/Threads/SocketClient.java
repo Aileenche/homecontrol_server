@@ -10,11 +10,12 @@ import java.io.InputStreamReader;
  */
 public class SocketClient implements Runnable {
 
+    //TODO When server sends a message client recives them here
     @Override
     public void run() {
         while (true) {
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(Main.clientSocket.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(Main.mainServerSocket.getInputStream()));
                 String message = in.readLine();
                 if (message != null) {
                     Main.logger.debug(message);

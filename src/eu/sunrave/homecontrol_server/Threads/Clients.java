@@ -18,6 +18,7 @@ public class Clients implements Runnable {
         Functions.SendMessage("Welcome to the server", Main.clientSockets.get(id));
     }
 
+    //TODO When client sends a message server recives them here
     @Override
     public void run() {
         while (true) {
@@ -30,9 +31,14 @@ public class Clients implements Runnable {
                     Main.logger.con(message);
                     String[] split = message.split(" ");
                     name = split[0];
+                    String command = split[1];
+                    if (command.equals("rss")) {
+                        Main.isStopped = true;
+                        Main.shutdown();
+                    }
                 }
             } catch (Exception e) {
-
+                Main.logger.debug("Unable to get correct responce from client " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
             }
         }
     }

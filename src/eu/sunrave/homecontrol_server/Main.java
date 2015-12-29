@@ -17,12 +17,13 @@ public class Main {
     //Server
     public static ArrayList<Clients> clients;
     public static ArrayList<Socket> clientSockets;
-    public static Thread socketServer;
+    public static Thread serverThread;
 
     //Client
     public static Webserver webserver;
     public static SocketClient socketClient;
-    public static Socket clientSocket;
+    public static Socket mainServerSocket;
+    public static Thread clientThread;
 
     //All
     public static varshandler varshandler;
@@ -34,6 +35,7 @@ public class Main {
     public static boolean isStopped = false;
     public static boolean debugMode = true;
     public static boolean isserver = false;
+    public static String identifier = "";
 
 
     public static void main(String[] args) {
@@ -43,17 +45,23 @@ public class Main {
         logger.init();
         Commands = new CommandHandler();
 
-        try {
-            if (args[0].indexOf("-server") != -1) {
-                isserver = true;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].substring(0, 12).equals("-identifier=")) {
+                identifier = args[i].substring(12, args[i].length());
             }
-        } catch (Exception e) {
-
+        }
+        if (identifier.equals("")) {
+            logger.critical("No Unique Identifier found! Please append [-identifier=YOURNAME] to the startup");
+        } else if (identifier.equals("~server~")) {
+            isserver = true;
+            logger.notice("ServerMode engaged!");
+        } else {
+            logger.notice("Hello, i'm " + identifier);
         }
 
         if (isserver) {
-            socketServer = new Thread(new SocketServer());
-            socketServer.start();
+            serverThread = new Thread(new SocketServer());
+            serverThread.start();
 
         } else {
 
@@ -61,16 +69,16 @@ public class Main {
             webserver.start();
 
             try {
-                clientSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
+                mainServerSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
             } catch (Exception e) {
                 logger.debug("ERROR: couldn't connect to server");
             }
 
             socketClient = new SocketClient();
-            Thread t = new Thread(socketClient);
-            t.start();
+            clientThread = new Thread(socketClient);
+            clientThread.start();
 
-            Functions.SendMessage("Aileen HelloWorld", clientSocket);
+            Functions.SendMessage("HelloWorld", mainServerSocket);
         }
 
 
@@ -87,7 +95,15 @@ public class Main {
             Commands.make(splitted);
             logger.debug("Typed Command is [" + splitted[0] + "]");
         }
+        shutdown();
+    }
 
+    public static void shutdown() {
+        if (isserver) {
+            serverThread.interrupt();
+        } else {
+            clientThread.interrupt();
+        }
         Main.logger.notice("Shutdown Server...");
         if (!isserver) {
             webserver.stop();
