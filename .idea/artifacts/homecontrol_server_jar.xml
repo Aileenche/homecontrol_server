@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="homecontrol_server:jar">
-    <output-path>$USER_HOME$/Desktop/IntelliJ Output</output-path>
+    <output-path>$PROJECT_DIR$/root</output-path>
     <root id="archive" name="homecontrol_server.jar">
       <element id="module-output" name="homecontrol_server" />
     </root>
