@@ -12,11 +12,12 @@ import java.util.ArrayList;
  */
 public class SocketServer implements Runnable {
     public ServerSocket serverSocket;
-    public ArrayList<Thread> clients;
 
     @Override
     public void run() {
-        clients = new ArrayList<>();
+        Main.logger.con("Server Started");
+        Main.clients = new ArrayList<>();
+        Main.clientSockets = new ArrayList<>();
         try {
             serverSocket = new ServerSocket(Resources.SocketServerPort);
             Main.varshandler.socketserverIsRunning = true;
@@ -28,12 +29,16 @@ public class SocketServer implements Runnable {
         try {
             while (Main.varshandler.socketserverIsRunning) {
                 Socket socket = serverSocket.accept();
-                Thread t = new Thread(new Clients(socket));
-                clients.add(t);
+
+                Main.clientSockets.add(socket);
+                int clientID = Main.clientSockets.size() - 1;
+                Clients c = new Clients(clientID);
+                Thread t = new Thread(c);
                 t.start();
+                Main.clients.add(c);
             }
         } catch (Exception e) {
-            Main.logger.error("SocketServer konnte nicht gestartet werden! ");
+            Main.logger.error("error connecting client.");
             Main.logger.error("" + e);
         }
         Main.varshandler.socketserverIsRunning = false;
