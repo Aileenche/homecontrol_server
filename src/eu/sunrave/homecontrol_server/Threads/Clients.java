@@ -32,17 +32,19 @@ public class Clients implements Runnable {
                 Packet p = (Packet) Functions.deserialize(data);
                 identifier = p.identifier;
                 ip = Main.clientSockets.get(id).getRemoteSocketAddress().toString();
-                if (p.pakettype == Packet.PacketType.registration && !isRegistered) {
-                    isRegistered = true;
-                } else {
-                    Main.logger.debug("No register packet was sent from " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
-                    Main.clientSockets.get(id).close();
-                    Main.clientSockets.remove(id);
-                    Main.clients.remove(id);
-                    for (int i = id; i < Main.clientSockets.size(); i++) {
-                        Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                if (!isRegistered) {
+                    if (p.pakettype == Packet.PacketType.registration) {
+                        isRegistered = true;
+                    } else {
+                        Main.logger.debug("No register packet was sent from " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
+                        Main.clientSockets.get(id).close();
+                        Main.clientSockets.remove(id);
+                        Main.clients.remove(id);
+                        for (int i = id; i < Main.clientSockets.size(); i++) {
+                            Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                        }
+                        break;
                     }
-                    break;
                 }
                 Main.serverPacketHandler.handle(p, id);
             } catch (Exception e) {
