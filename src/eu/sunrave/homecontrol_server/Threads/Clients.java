@@ -42,6 +42,11 @@ public class Clients implements Runnable {
             } catch (Exception e) {
                 Main.logger.debug("Unable to get correct responce from client " + identifier);
                 //Functions.printStacktoDebug(e);
+                try {
+                    Main.clientSockets.get(id).close();
+                } catch (Exception ex) {
+                    Main.logger.debug("Couldn't remove connected user " + identifier);
+                }
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
                 for (int i = id; i < Main.clientSockets.size(); i++) {
@@ -108,6 +113,11 @@ public class Clients implements Runnable {
                 sendPack.data = "Another user is already connect with the same identifier";
                 Functions.SendPacket(sendPack, Main.clientSockets.get(id));
                 Main.logger.debug("User already connected with that identifier " + identifier);
+                try {
+                    Main.clientSockets.get(id).close();
+                } catch (Exception ex) {
+                    Main.logger.debug("Couldn't remove connected user " + identifier);
+                }
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
                 for (int i = id; i < Main.clientSockets.size(); i++) {
