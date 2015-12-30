@@ -40,6 +40,7 @@ public class Main {
     public static boolean debugMode = true;
     public static boolean isserver = false;
     public static String identifier = "";
+    public static boolean forceConnect = false;
 
 
     public static void main(String[] args) {
@@ -52,6 +53,9 @@ public class Main {
         for (int i = 0; i < args.length; i++) {
             if (args[i].substring(0, 12).equals("-identifier=")) {
                 identifier = args[i].substring(12, args[i].length());
+            }
+            if (args[i].substring(0, 6).equals("-force")) {
+                forceConnect = true;
             }
         }
 
@@ -88,7 +92,9 @@ public class Main {
 
             //Send Registration To Server
             Packet p = new Packet(identifier, Packet.PacketType.registration);
-            p.data = "force";
+            if (forceConnect) {
+                p.data = "force";
+            }
             Functions.SendPacket(p, mainServerSocket);
         }
 
