@@ -71,7 +71,7 @@ public class Main {
             try {
                 mainServerSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
             } catch (Exception e) {
-                logger.debug("ERROR: couldn't connect to server");
+                logger.warning("couldn't connect to server");
             }
 
             socketClient = new SocketClient();

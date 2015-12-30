@@ -12,10 +12,11 @@ import java.io.InputStreamReader;
 public class Clients implements Runnable {
     public String name;
     public int id;
+    public String ip;
 
     public Clients(int id) {
         this.id = id;
-        Functions.SendMessage("Welcome to the server", Main.clientSockets.get(id));
+        Functions.SendMessage("Welcome to the server " + name, Main.clientSockets.get(id));
     }
 
     //TODO When client sends a message server recives them here
@@ -32,9 +33,15 @@ public class Clients implements Runnable {
                     String[] split = message.split(" ");
                     name = split[0];
                     String command = split[1];
-                    if (command.equals("rss")) {
-                        Main.isStopped = true;
-                        Main.shutdown();
+                    switch (command) {
+                        case ("rss"):
+                            Main.isStopped = true;
+                            Main.shutdown();
+                            break;
+                        case ("clients"):
+                            Main.isStopped = true;
+                            Main.shutdown();
+                            break;
                     }
                 }
             } catch (Exception e) {

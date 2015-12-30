@@ -31,7 +31,16 @@ public class SocketServer implements Runnable {
                 Socket socket = serverSocket.accept();
 
                 Main.clientSockets.add(socket);
-                int clientID = Main.clientSockets.size() - 1;
+
+                int clientID = -1;
+                for (int i = 0; i < Main.clientSockets.size(); i++) {
+                    if (Main.clientSockets.get(i) == socket) {
+                        clientID = i;
+                    }
+                }
+                //Main.clientSockets.size() - 1;
+
+
                 Clients c = new Clients(clientID);
                 Thread t = new Thread(c);
                 t.start();
