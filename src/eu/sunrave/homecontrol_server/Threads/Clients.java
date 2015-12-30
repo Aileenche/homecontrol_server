@@ -41,7 +41,7 @@ public class Clients implements Runnable {
                         Main.clientSockets.remove(id);
                         Main.clients.remove(id);
                         for (int i = id; i < Main.clientSockets.size(); i++) {
-                            Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                            Main.clients.get(i).id = i;
                         }
                         break;
                     }
@@ -52,7 +52,7 @@ public class Clients implements Runnable {
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
                 for (int i = id; i < Main.clientSockets.size(); i++) {
-                    Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                    Main.clients.get(i).id = i;
                 }
                 break;
             }
