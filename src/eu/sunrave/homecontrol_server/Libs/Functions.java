@@ -43,6 +43,15 @@ public class Functions {
         }
     }
 
+    public static void printStacktoDebug(Exception e) {
+        boolean current = Main.debugMode;
+        Main.debugMode = true;
+        for (int i = 0; i < e.getStackTrace().length; i++) {
+            Main.logger.debug("" + e.getStackTrace()[i]);
+        }
+        Main.debugMode = current;
+    }
+
     public int getClientIDFromName(String name) {
         for (int i = 0; i < Main.clients.size(); i++) {
             if (Main.clients.get(i).identifier == name) {

@@ -38,12 +38,14 @@ public class Clients implements Runnable {
                 identifier = p.identifier;
                 ip = Main.clientSockets.get(id).getRemoteSocketAddress().toString();
                 if (!isRegistered) {
-                    if (!TryRegister(p))
+                    if (!TryRegister(p)) {
                         break;
+                    }
                 }
                 Main.serverPacketHandler.handle(p, id);
             } catch (Exception e) {
-                Main.logger.debug("Unable to get correct responce from client " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
+                Main.logger.debug("Unable to get correct responce from client " + e);
+                Functions.printStacktoDebug(e);
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
                 for (int i = id; i < Main.clientSockets.size(); i++) {
@@ -84,15 +86,13 @@ public class Clients implements Runnable {
         }
 
         if (counter > 1) {
-            if (p.data.equals("force")) {
-                Main.logger.debug("User already connected with that identifier " + identifier);
-                Main.clientSockets.remove(id);
-                Main.clients.remove(id);
-                for (int i = id; i < Main.clientSockets.size(); i++) {
-                    Main.clients.get(i).id = i;
-                }
-                return false;
-            } else {
+            String pdata = "";
+            try {
+                pdata = (String) p.data;
+            } catch (Exception ex) {
+                Main.logger.debug("User didn't send data in correct format");
+            }
+            if (pdata.equals("force")) {
                 Main.logger.debug("Removing previous user with same identifier" + identifier);
                 Main.clients.get(prevClientID).isStop = true;
                 Main.clientSockets.remove(prevClientID);
@@ -100,6 +100,14 @@ public class Clients implements Runnable {
                 for (int i = id; i < Main.clientSockets.size(); i++) {
                     Main.clients.get(i).id = i;
                 }
+            } else {
+                Main.logger.debug("User already connected with that identifier " + identifier);
+                Main.clientSockets.remove(id);
+                Main.clients.remove(id);
+                for (int i = id; i < Main.clientSockets.size(); i++) {
+                    Main.clients.get(i).id = i;
+                }
+                return false;
             }
         }
 

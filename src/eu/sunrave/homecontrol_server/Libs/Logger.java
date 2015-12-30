@@ -26,23 +26,24 @@ public class Logger {
     }
 
     public void con(String text) {
-        System.out.println("[CONSOLE][" + sdf.format(new Date()) + "] -> " + text);
+        System.out.println("[" + sdf.format(new Date()) + "][CONSOLE] -> " + text);
     }
 
     public void notice(String text) {
-        System.out.println("[Notice]  [" + sdf.format(new Date()) + "] -> " + text);
+        System.out.println("[" + sdf.format(new Date()) + "][Notice]   -> " + text);
     }
 
     public void warning(String text) {
-        System.out.println("[Warning] [" + sdf.format(new Date()) + "] -> " + text);
+        System.out.println("[" + sdf.format(new Date()) + "][Warning]  -> " + text);
     }
 
     public void error(String text) {
-        System.out.println("[Error]   [" + sdf.format(new Date()) + "] -> " + text);
-        Main.isStopped = true;
+        System.out.println("[" + sdf.format(new Date()) + "][Error]    -> " + text);
+        Main.shutdown();
     }
 
     public void critical(String text) {
-        System.out.println("[CRITICAL][" + sdf.format(new Date()) + "] -> " + text);
+        System.out.println("[" + sdf.format(new Date()) + "][CRITICAL] -> " + text);
+        Main.shutdown();
     }
 }
