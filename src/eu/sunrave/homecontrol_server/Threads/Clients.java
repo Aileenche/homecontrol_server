@@ -34,6 +34,7 @@ public class Clients implements Runnable {
             } catch (Exception e) {
                 Main.logger.debug("Unable to get correct responce from client " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
                 Main.clientSockets.remove(id);
+                Main.clients.remove(id);
                 break;
             }
         }
