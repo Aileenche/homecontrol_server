@@ -32,7 +32,7 @@ public class Clients implements Runnable {
                 Packet p = (Packet) Functions.deserialize(data);
                 identifier = p.identifier;
                 ip = Main.clientSockets.get(id).getRemoteSocketAddress().toString();
-                if (p.pakettype == Packet.PacketType.registration) {
+                if (p.pakettype == Packet.PacketType.registration && !isRegistered) {
                     isRegistered = true;
                 } else {
                     Main.logger.debug("No register packet was sent from " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
