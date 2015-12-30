@@ -24,8 +24,33 @@ public class SocketClient implements Runnable {
                 Main.clientPacketHandler.handle(p);
 
             } catch (Exception e) {
-                Main.logger.debug("Error: reading from server\nDisconnecting...");
-                break;
+                Main.logger.debug("Error: reading from server\n");
+                Main.logger.notice("Disconnected");
+                Main.logger.notice("Atempting to reconnect...");
+                int counter = 1;
+                int reconnectintval = 1000;
+                while (true) {
+                    try {
+                        Thread.sleep(reconnectintval);
+                    } catch (Exception ex) {
+                        Main.logger.debug("Couldn't wait to retry again");
+                    }
+
+                    Main.logger.debug("Atempt " + counter);
+                    if (Functions.Reconnect()) {
+                        Main.logger.notice("Reconnected to server after " + counter + " tries");
+                        Packet p = new Packet(Main.identifier, Packet.PacketType.registration);
+                        Functions.SendPacket(p, Main.mainServerSocket);
+                        break;
+                    } else {
+                        if (counter % 60 == 0) {
+                            reconnectintval += 500;
+                            Main.logger.debug("Increased reconnect interval to " + reconnectintval);
+                        }
+                        Main.logger.debug("Failed to reconnect to server");
+                    }
+                    counter++;
+                }
             }
         }
     }

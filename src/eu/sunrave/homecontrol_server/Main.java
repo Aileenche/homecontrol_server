@@ -35,7 +35,6 @@ public class Main {
     public static Logger logger;
     public static CommandHandler Commands;
 
-
     //Globals
     public static boolean isStopped = false;
     public static boolean debugMode = true;

@@ -1,6 +1,7 @@
 package eu.sunrave.homecontrol_server.Libs;
 
 import eu.sunrave.homecontrol_server.Main;
+import eu.sunrave.homecontrol_server.Resources;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,6 +31,16 @@ public class Functions {
         ByteArrayInputStream b = new ByteArrayInputStream(bytes);
         ObjectInputStream o = new ObjectInputStream(b);
         return o.readObject();
+    }
+
+    public static boolean Reconnect() {
+        //Attempt to connect to the server
+        try {
+            Main.mainServerSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public int getClientIDFromName(String name) {

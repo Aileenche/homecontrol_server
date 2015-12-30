@@ -14,6 +14,7 @@ public class Clients implements Runnable {
     public String identifier;
     public int id;
     public String ip;
+    public boolean isRegistered;
 
     public Clients(int id) {
         this.id = id;
@@ -22,6 +23,7 @@ public class Clients implements Runnable {
     //TODO When client sends a message server recives them here
     @Override
     public void run() {
+        isRegistered = false;
         while (true) {
             try {
                 InputStream IR = Main.clientSockets.get(id).getInputStream();
@@ -30,11 +32,26 @@ public class Clients implements Runnable {
                 Packet p = (Packet) Functions.deserialize(data);
                 identifier = p.identifier;
                 ip = Main.clientSockets.get(id).getRemoteSocketAddress().toString();
+                if (p.pakettype == Packet.PacketType.registration) {
+                    isRegistered = true;
+                } else {
+                    Main.logger.debug("No register packet was sent from " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
+                    Main.clientSockets.get(id).close();
+                    Main.clientSockets.remove(id);
+                    Main.clients.remove(id);
+                    for (int i = id; i < Main.clientSockets.size(); i++) {
+                        Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                    }
+                    break;
+                }
                 Main.serverPacketHandler.handle(p, id);
             } catch (Exception e) {
                 Main.logger.debug("Unable to get correct responce from client " + Main.clientSockets.get(id).getRemoteSocketAddress().toString());
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
+                for (int i = id; i < Main.clientSockets.size(); i++) {
+                    Main.clients.get(i).id = Main.clients.get(i).id - 1;
+                }
                 break;
             }
         }
