@@ -54,7 +54,7 @@ public class Main {
             if (args[i].substring(0, 12).equals("-identifier=")) {
                 identifier = args[i].substring(12, args[i].length());
             }
-            if (args[i].substring(0, 6).equals("-force")) {
+            if (args[i].equals("-force")) {
                 forceConnect = true;
             }
         }
