@@ -1,6 +1,5 @@
 package eu.sunrave.homecontrol_server.Handler;
 
-import eu.sunrave.homecontrol_server.Libs.Functions;
 import eu.sunrave.homecontrol_server.Main;
 
 /**
@@ -65,15 +64,15 @@ public class CommandHandler {
                 }
                 if (Main.isserver) {
                     for (int i = 0; i < Main.clientSockets.size(); i++) {
-                        Functions.SendMessage(message, Main.clientSockets.get(i));
+                        //Functions.SendPacket(message, Main.clientSockets.get(i));
                     }
                 } else {
-                    Functions.SendMessage(message, Main.mainServerSocket);
+                    //Functions.SendPacket(message, Main.mainServerSocket);
                 }
                 break;
             case ("rss"):
                 if (!Main.isserver) {
-                    Functions.SendMessage("rss", Main.mainServerSocket);
+                    //Functions.SendPacket("rss", Main.mainServerSocket);
                 } else {
                     Main.logger.debug("WARNING: this command can only be executed on a client");
                 }

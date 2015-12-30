@@ -6,6 +6,7 @@ import eu.sunrave.homecontrol_server.Handler.ServerPacketHandler;
 import eu.sunrave.homecontrol_server.Handler.varshandler;
 import eu.sunrave.homecontrol_server.Libs.Functions;
 import eu.sunrave.homecontrol_server.Libs.Logger;
+import eu.sunrave.homecontrol_server.Libs.Packet;
 import eu.sunrave.homecontrol_server.Threads.Clients;
 import eu.sunrave.homecontrol_server.Threads.SocketClient;
 import eu.sunrave.homecontrol_server.Threads.SocketServer;
@@ -65,22 +66,30 @@ public class Main {
         }
 
         if (isserver) {
+            //Create a new thread and handle all of the server connections in there
             serverThread = new Thread(new SocketServer());
             serverThread.start();
             serverPacketHandler = new ServerPacketHandler();
         } else {
+            //Create client packet handler & webserver
             clientPacketHandler = new ClientPacketHandler();
             webserver = new Webserver("Webserver");
             webserver.start();
+
+            //Attempt to connect to the server
             try {
                 mainServerSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
             } catch (Exception e) {
                 logger.warning("couldn't connect to server");
             }
+            //Creat a new thread and handle connection to the server in there
             socketClient = new SocketClient();
             clientThread = new Thread(socketClient);
             clientThread.start();
-            Functions.SendMessage("HelloWorld", mainServerSocket);
+
+            //Send Registration To Server
+            Packet p = new Packet(identifier, Packet.PacketType.registration);
+            Functions.SendPacket(p, mainServerSocket);
         }
 
 

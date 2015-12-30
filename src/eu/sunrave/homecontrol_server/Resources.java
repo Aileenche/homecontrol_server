@@ -8,4 +8,5 @@ public class Resources {
     public static int WebServerPort = 8080;
     public static String socketServerIP = "5.9.251.205";
     public static int SocketServerPort = 51365;
+    public static int MaxPacketSize = 10240;
 }
