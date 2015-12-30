@@ -17,6 +17,13 @@ public class ServerPacketHandler {
                 pack.data = "Welcome to the server " + Main.clients.get(clientid).identifier;
                 Functions.SendPacket(pack, Main.clientSockets.get(clientid));
                 break;
+            case command:
+                if (p.data == "rss") {
+                    Main.shutdown();
+                } else {
+                    Main.logger.notice((String) p.data);
+                }
+                break;
             case data:
                 //TODO handle client data when it sends stuff to the server
                 break;

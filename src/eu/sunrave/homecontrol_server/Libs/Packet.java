@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Packet implements Serializable {
 
     public String identifier;
-    ;
     public PacketType pakettype;
     public Object data;
 
@@ -20,6 +19,7 @@ public class Packet implements Serializable {
 
     public enum PacketType {
         registration,
+        command,
         data
     }
 }
