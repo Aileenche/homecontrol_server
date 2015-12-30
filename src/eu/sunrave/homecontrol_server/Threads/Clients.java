@@ -99,19 +99,16 @@ public class Clients implements Runnable {
             }
 
             if (pdata.equals("force")) {
-                Packet sendPack = new Packet(Main.identifier, Packet.PacketType.command);
-                sendPack.data = "Another user force connect with same identifier, So you have been disconnected from the server";
-                Functions.SendPacket(sendPack, Main.clientSockets.get(prevClientID));
+
                 Main.logger.debug("Removing previous user with same identifier " + identifier);
                 try {
                     Main.clientSockets.get(prevClientID).close();
                 } catch (Exception ex) {
                     Main.logger.debug("Couldn't remove previously connected user " + identifier);
                 }
+
             } else {
-                Packet sendPack = new Packet(Main.identifier, Packet.PacketType.command);
-                sendPack.data = "Another user is already connect with the same identifier";
-                Functions.SendPacket(sendPack, Main.clientSockets.get(id));
+
                 Main.logger.debug("User already connected with that identifier " + identifier);
                 try {
                     Main.clientSockets.get(id).close();
@@ -124,6 +121,7 @@ public class Clients implements Runnable {
                     Main.clients.get(i).id = i;
                 }
                 return false;
+
             }
         }
 

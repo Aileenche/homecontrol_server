@@ -40,7 +40,7 @@ public class SocketServer implements Runnable {
                 }
 
                 Clients c = new Clients(clientID);
-                Thread t = new Thread(c);
+                Thread t = new Thread(c, "CliendID:" + clientID);
                 t.start();
                 Main.clients.add(c);
             }

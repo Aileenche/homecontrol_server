@@ -14,6 +14,7 @@ import eu.sunrave.homecontrol_server.Threads.Webserver;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -41,6 +42,7 @@ public class Main {
     public static boolean isserver = false;
     public static String identifier = "";
     public static boolean forceConnect = false;
+    public static boolean testC = false;
 
 
     public static void main(String[] args) {
@@ -51,17 +53,23 @@ public class Main {
         Commands = new CommandHandler();
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i] == null) {
-
-            }
-            if (args[i].equals("-force")) {
-                forceConnect = true;
-                args[i] = null;
-            } else if (args[i].substring(0, 12).equals("-identifier=")) {
-                identifier = args[i].substring(12, args[i].length());
+            if (args[i] != null) {
+                if (args[i].equals("-force")) {
+                    forceConnect = true;
+                    args[i] = null;
+                } else if (args[i].equals("-testc")) {
+                    testC = true;
+                    args[i] = null;
+                } else if (args[i].substring(0, 12).equals("-identifier=")) {
+                    identifier = args[i].substring(12, args[i].length());
+                }
             }
         }
-
+        if (testC) {
+            Random rnd = new Random();
+            int multi = rnd.nextInt(Integer.MAX_VALUE);
+            identifier = identifier + "" + multi;
+        }
         if (identifier.equals("")) {
             logger.critical("No Unique Identifier found! Please append [-identifier=YOURNAME] to the startup");
         } else if (identifier.equals("~server~")) {
@@ -73,14 +81,14 @@ public class Main {
 
         if (isserver) {
             //Create a new thread and handle all of the server connections in there
-            serverThread = new Thread(new SocketServer());
+            serverThread = new Thread(new SocketServer(), "Connectionhandler");
             serverThread.start();
             serverPacketHandler = new ServerPacketHandler();
         } else {
             //Create client packet handler & webserver
             clientPacketHandler = new ClientPacketHandler();
-            webserver = new Webserver("Webserver");
-            webserver.start();
+            //webserver = new Webserver("Webserver");
+            //webserver.start();
 
             //Attempt to connect to the server
             try {

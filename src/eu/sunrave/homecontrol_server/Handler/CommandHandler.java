@@ -4,6 +4,8 @@ import eu.sunrave.homecontrol_server.Libs.Functions;
 import eu.sunrave.homecontrol_server.Libs.Packet;
 import eu.sunrave.homecontrol_server.Main;
 
+import java.util.Set;
+
 /**
  * Created by Admin on 28.12.2015.
  */
@@ -84,6 +86,14 @@ public class CommandHandler {
                 } else {
                     Main.logger.debug("WARNING: this command can only be executed on a client");
                 }
+                break;
+            case ("cthreads"):
+                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+                for (int i = 0; i < threadArray.length; i++) {
+                    Main.logger.debug(threadArray[i].getName());
+                }
+                Main.logger.debug(threadArray.length + "");
                 break;
         }
     }
