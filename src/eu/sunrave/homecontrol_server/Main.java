@@ -51,11 +51,14 @@ public class Main {
         Commands = new CommandHandler();
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].substring(0, 12).equals("-identifier=")) {
-                identifier = args[i].substring(12, args[i].length());
+            if (args[i] == null) {
+
             }
             if (args[i].equals("-force")) {
                 forceConnect = true;
+                args[i] = null;
+            } else if (args[i].substring(0, 12).equals("-identifier=")) {
+                identifier = args[i].substring(12, args[i].length());
             }
         }
 
