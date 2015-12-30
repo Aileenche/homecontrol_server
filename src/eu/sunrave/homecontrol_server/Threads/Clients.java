@@ -15,7 +15,6 @@ public class Clients implements Runnable {
     public int id;
     public String ip;
     public boolean isRegistered;
-    public boolean isStop;
 
     public Clients(int id) {
         this.id = id;
@@ -24,12 +23,9 @@ public class Clients implements Runnable {
     //TODO When client sends a message server recives them here
     @Override
     public void run() {
-        isStop = false;
         isRegistered = false;
         while (true) {
             try {
-                if (isStop)
-                    break;
 
                 InputStream IR = Main.clientSockets.get(id).getInputStream();
                 byte[] data = new byte[Resources.MaxPacketSize];
@@ -44,8 +40,8 @@ public class Clients implements Runnable {
                 }
                 Main.serverPacketHandler.handle(p, id);
             } catch (Exception e) {
-                Main.logger.debug("Unable to get correct responce from client " + e);
-                Functions.printStacktoDebug(e);
+                Main.logger.debug("Unable to get correct responce from client " + identifier);
+                //Functions.printStacktoDebug(e);
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);
                 for (int i = id; i < Main.clientSockets.size(); i++) {
@@ -56,6 +52,7 @@ public class Clients implements Runnable {
         }
     }
 
+    //Make sure the user is allowed to register to the server
     private boolean TryRegister(Packet p) {
         if (p.pakettype == Packet.PacketType.registration) {
             isRegistered = true;
@@ -88,19 +85,28 @@ public class Clients implements Runnable {
         if (counter > 1) {
             String pdata = "";
             try {
-                pdata = (String) p.data;
+                if (p.data != null)
+                    pdata = (String) p.data;
+                else
+                    pdata = "";
             } catch (Exception ex) {
                 Main.logger.debug("User didn't send data in correct format");
             }
+
             if (pdata.equals("force")) {
-                Main.logger.debug("Removing previous user with same identifier" + identifier);
-                Main.clients.get(prevClientID).isStop = true;
-                Main.clientSockets.remove(prevClientID);
-                Main.clients.remove(prevClientID);
-                for (int i = id; i < Main.clientSockets.size(); i++) {
-                    Main.clients.get(i).id = i;
+                Packet sendPack = new Packet(Main.identifier, Packet.PacketType.command);
+                sendPack.data = "Another user force connect with same identifier, So you have been disconnected from the server";
+                Functions.SendPacket(sendPack, Main.clientSockets.get(prevClientID));
+                Main.logger.debug("Removing previous user with same identifier " + identifier);
+                try {
+                    Main.clientSockets.get(prevClientID).close();
+                } catch (Exception ex) {
+                    Main.logger.debug("Couldn't remove previously connected user " + identifier);
                 }
             } else {
+                Packet sendPack = new Packet(Main.identifier, Packet.PacketType.command);
+                sendPack.data = "Another user is already connect with the same identifier";
+                Functions.SendPacket(sendPack, Main.clientSockets.get(id));
                 Main.logger.debug("User already connected with that identifier " + identifier);
                 Main.clientSockets.remove(id);
                 Main.clients.remove(id);

@@ -38,8 +38,6 @@ public class SocketServer implements Runnable {
                         clientID = i;
                     }
                 }
-                //Main.clientSockets.size() - 1;
-
 
                 Clients c = new Clients(clientID);
                 Thread t = new Thread(c);

@@ -88,6 +88,7 @@ public class Main {
 
             //Send Registration To Server
             Packet p = new Packet(identifier, Packet.PacketType.registration);
+            p.data = "force";
             Functions.SendPacket(p, mainServerSocket);
         }
 
