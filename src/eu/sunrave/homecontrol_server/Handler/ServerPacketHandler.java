@@ -18,10 +18,10 @@ public class ServerPacketHandler {
                 Functions.SendPacket(pack, Main.clientSockets.get(clientid));
                 break;
             case command:
-                if (p.data == "rss") {
+                if (p.data.equals("rss")) {
                     Main.shutdown();
                 } else {
-                    Main.logger.notice((String) p.data);
+                    Main.logger.notice(p.identifier + ": " + p.data);
                 }
                 break;
             case data:
