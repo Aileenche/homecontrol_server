@@ -19,6 +19,7 @@ public class SocketClient implements Runnable {
                 String message = in.readLine();
                 if (message != null) {
                     Main.logger.debug(message);
+                    Main.clientPacketHandler.handle();
                 }
             } catch (Exception e) {
                 Main.logger.debug("Error: reading from server");

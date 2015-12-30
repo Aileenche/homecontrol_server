@@ -30,6 +30,9 @@ public class Clients implements Runnable {
                 String message = BR.readLine();
                 if (message != null) {
                     Main.logger.con(message);
+
+                    Main.serverPacketHandler.handle();
+
                     String[] split = message.split(" ");
                     name = split[0];
                     String command = split[1];

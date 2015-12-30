@@ -1,6 +1,8 @@
 package eu.sunrave.homecontrol_server;
 
+import eu.sunrave.homecontrol_server.Handler.ClientPacketHandler;
 import eu.sunrave.homecontrol_server.Handler.CommandHandler;
+import eu.sunrave.homecontrol_server.Handler.ServerPacketHandler;
 import eu.sunrave.homecontrol_server.Handler.varshandler;
 import eu.sunrave.homecontrol_server.Libs.Functions;
 import eu.sunrave.homecontrol_server.Libs.Logger;
@@ -18,12 +20,14 @@ public class Main {
     public static ArrayList<Clients> clients;
     public static ArrayList<Socket> clientSockets;
     public static Thread serverThread;
+    public static ServerPacketHandler serverPacketHandler;
 
     //Client
     public static Webserver webserver;
     public static SocketClient socketClient;
     public static Socket mainServerSocket;
     public static Thread clientThread;
+    public static ClientPacketHandler clientPacketHandler;
 
     //All
     public static varshandler varshandler;
@@ -50,6 +54,7 @@ public class Main {
                 identifier = args[i].substring(12, args[i].length());
             }
         }
+
         if (identifier.equals("")) {
             logger.critical("No Unique Identifier found! Please append [-identifier=YOURNAME] to the startup");
         } else if (identifier.equals("~server~")) {
@@ -62,22 +67,19 @@ public class Main {
         if (isserver) {
             serverThread = new Thread(new SocketServer());
             serverThread.start();
-
+            serverPacketHandler = new ServerPacketHandler();
         } else {
-
+            clientPacketHandler = new ClientPacketHandler();
             webserver = new Webserver("Webserver");
             webserver.start();
-
             try {
                 mainServerSocket = new Socket(Resources.socketServerIP, Resources.SocketServerPort);
             } catch (Exception e) {
                 logger.warning("couldn't connect to server");
             }
-
             socketClient = new SocketClient();
             clientThread = new Thread(socketClient);
             clientThread.start();
-
             Functions.SendMessage("HelloWorld", mainServerSocket);
         }
 
