@@ -2,6 +2,7 @@ package eu.sunrave.homecontrol_server.Libs;
 
 import eu.sunrave.homecontrol_server.Main;
 import eu.sunrave.homecontrol_server.Resources;
+import eu.sunrave.homecontrol_server.Threads.Clients;
 
 import java.io.*;
 import java.net.Socket;
@@ -52,12 +53,51 @@ public class Functions {
         Main.debugMode = current;
     }
 
-    public int getClientIDFromName(String name) {
-        for (int i = 0; i < Main.clients.size(); i++) {
-            if (Main.clients.get(i).identifier == name) {
+    public static int getFreeClientSlot() {
+        for (int i = 0; i < Main.clientHarv.size(); i++) {
+            if (Main.clientHarv.get(i) == null) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public static boolean checkDoubleIdentifier(String identifier) {
+        for (int i = 0; i < Main.clientHarv.size(); i++) {
+            Clients client = Main.clientHarv.get(i);
+            if (client != null) {
+                if (client.identifier.equals(identifier)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean disconnectAndCleanUpClient(String identifier) {
+        for (int i = 0; i < Main.clientHarv.size(); i++) {
+            Clients client = Main.clientHarv.get(i);
+            if (client != null) {
+                if (client.identifier.equals(identifier)) {
+                    try {
+                        Main.clientHarv.get(i).socket.close();
+                    } catch (IOException e) {
+                        return false;
+                    }
+                    Main.clientHarv.set(i, null);
+                }
+            }
+        }
+        return true;
+    }
+
+    public static int countClients() {
+        int counter = 0;
+        for (int i = 0; i < Main.clientHarv.size(); i++) {
+            if (Main.clientHarv.get(i) != null) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }

@@ -1,12 +1,7 @@
 package eu.sunrave.homecontrol_server;
 
-import eu.sunrave.homecontrol_server.Handler.ClientPacketHandler;
-import eu.sunrave.homecontrol_server.Handler.CommandHandler;
-import eu.sunrave.homecontrol_server.Handler.ServerPacketHandler;
-import eu.sunrave.homecontrol_server.Handler.varshandler;
-import eu.sunrave.homecontrol_server.Libs.Functions;
+import eu.sunrave.homecontrol_server.Handler.*;
 import eu.sunrave.homecontrol_server.Libs.Logger;
-import eu.sunrave.homecontrol_server.Libs.Packet;
 import eu.sunrave.homecontrol_server.Threads.Clients;
 import eu.sunrave.homecontrol_server.Threads.SocketClient;
 import eu.sunrave.homecontrol_server.Threads.SocketServer;
@@ -19,10 +14,14 @@ import java.util.Scanner;
 
 public class Main {
     //Server
-    public static ArrayList<Clients> clients;
-    public static ArrayList<Socket> clientSockets;
+    //public static ArrayList<Clients> clients;
+    //public static ArrayList<Socket> clientSockets;
     public static Thread serverThread;
     public static ServerPacketHandler serverPacketHandler;
+    public static ArrayList<Clients> clientHarv;
+    public static ArrayList<Socket> waitlist;
+    public static Thread waitlistHandler;
+    public static Socket waitingSocket;
 
     //Client
     public static Webserver webserver;
@@ -84,6 +83,13 @@ public class Main {
             serverThread = new Thread(new SocketServer(), "Connectionhandler");
             serverThread.start();
             serverPacketHandler = new ServerPacketHandler();
+            clientHarv = new ArrayList<>();
+            for (int i = 0; i < 500; i++) {
+                clientHarv.add(i, null);
+            }
+            waitlist = new ArrayList<>();
+            waitlistHandler = new Thread(new WaitListHandler(), "WaitListHandler");
+            waitlistHandler.start();
         } else {
             //Create client packet handler & webserver
             clientPacketHandler = new ClientPacketHandler();
@@ -102,11 +108,11 @@ public class Main {
             clientThread.start();
 
             //Send Registration To Server
-            Packet p = new Packet(identifier, Packet.PacketType.registration);
-            if (forceConnect) {
-                p.data = "force";
-            }
-            Functions.SendPacket(p, mainServerSocket);
+            //Packet p = new Packet(identifier, Packet.PacketType.registration);
+            //if (forceConnect) {
+            //    p.data = "force";
+            //}
+            //Functions.SendPacket(p, mainServerSocket);
         }
 
 
@@ -133,7 +139,7 @@ public class Main {
             clientThread.interrupt();
         }
         Main.logger.notice("Shutdown Server...");
-        if (!isserver) {
+        if (!isserver && webserver.isRunning) {
             webserver.stop();
         }
         System.exit(0);

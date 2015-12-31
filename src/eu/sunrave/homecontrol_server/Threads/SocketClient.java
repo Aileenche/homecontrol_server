@@ -24,8 +24,7 @@ public class SocketClient implements Runnable {
                 Main.clientPacketHandler.handle(p);
 
             } catch (Exception e) {
-                Main.logger.debug("Error: reading from server\n");
-                Main.logger.notice("Disconnected");
+                Main.logger.notice("Disconnected...");
                 Main.logger.notice("Atempting to reconnect...");
                 int counter = 1;
                 int reconnectintval = 1000;
@@ -40,6 +39,9 @@ public class SocketClient implements Runnable {
                     if (Functions.Reconnect()) {
                         Main.logger.notice("Reconnected to server after " + counter + " tries");
                         Packet p = new Packet(Main.identifier, Packet.PacketType.registration);
+                        if (Main.forceConnect) {
+                            p.data = "force";
+                        }
                         Functions.SendPacket(p, Main.mainServerSocket);
                         break;
                     } else {

@@ -67,14 +67,35 @@ public class CommandHandler {
                     message += " " + presplit[i];
                 }
                 if (Main.isserver) {
-                    for (int i = 0; i < Main.clientSockets.size(); i++) {
-                        Packet p = new Packet(Main.identifier, Packet.PacketType.command);
-                        p.data = message;
-                        Functions.SendPacket(p, Main.clientSockets.get(i));
+                    for (int i = 0; i < Main.clientHarv.size(); i++) {
+                        if (Main.clientHarv.get(i) != null) {
+                            Packet p = new Packet(Main.identifier, Packet.PacketType.message);
+                            p.data = message;
+                            Functions.SendPacket(p, Main.clientHarv.get(i).socket);
+                        }
+                    }
+                } else {
+                    Packet p = new Packet(Main.identifier, Packet.PacketType.message);
+                    p.data = message;
+                    Functions.SendPacket(p, Main.mainServerSocket);
+                }
+                break;
+            case ("bc"):
+                String msg = "";
+                for (int i = 1; i < presplit.length; i++) {
+                    msg += " " + presplit[i];
+                }
+                if (Main.isserver) {
+                    for (int i = 0; i < Main.clientHarv.size(); i++) {
+                        if (Main.clientHarv.get(i) != null) {
+                            Packet p = new Packet(Main.identifier, Packet.PacketType.message);
+                            p.data = "[SERVERBROADCAST]" + msg;
+                            Functions.SendPacket(p, Main.clientHarv.get(i).socket);
+                        }
                     }
                 } else {
                     Packet p = new Packet(Main.identifier, Packet.PacketType.command);
-                    p.data = message;
+                    p.data = "bc" + msg;
                     Functions.SendPacket(p, Main.mainServerSocket);
                 }
                 break;
@@ -94,6 +115,16 @@ public class CommandHandler {
                     Main.logger.debug(threadArray[i].getName());
                 }
                 Main.logger.debug(threadArray.length + "");
+                break;
+            case ("clients"):
+                if (Main.isserver) {
+                    int counter = Functions.countClients();
+                    Main.logger.notice("Connected Clients: " + counter);
+                } else {
+                    Packet p = new Packet(Main.identifier, Packet.PacketType.command);
+                    p.data = "clients";
+                    Functions.SendPacket(p, Main.mainServerSocket);
+                }
                 break;
         }
     }

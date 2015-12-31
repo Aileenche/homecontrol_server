@@ -5,4 +5,5 @@ package eu.sunrave.homecontrol_server.Handler;
  */
 public class varshandler {
     public boolean socketserverIsRunning;
+    public boolean waitlistHandlerIsRunning;
 }

@@ -21,12 +21,12 @@ public class Logger {
 
     public void debug(String text) {
         if (Main.debugMode) {
-            System.out.println("[DEBUG]   [" + sdf.format(new Date()) + "] -> " + text);
+            System.out.println("[" + sdf.format(new Date()) + "][DEBUG]    -> " + text);
         }
     }
 
     public void con(String text) {
-        System.out.println("[" + sdf.format(new Date()) + "][CONSOLE] -> " + text);
+        System.out.println("[" + sdf.format(new Date()) + "][CONSOLE]  -> " + text);
     }
 
     public void notice(String text) {

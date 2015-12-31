@@ -5,7 +5,6 @@ import eu.sunrave.homecontrol_server.Resources;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Created by Admin on 29.12.2015.
@@ -15,9 +14,9 @@ public class SocketServer implements Runnable {
 
     @Override
     public void run() {
-        Main.logger.con("Server Started");
-        Main.clients = new ArrayList<>();
-        Main.clientSockets = new ArrayList<>();
+        Main.logger.con("SocketServer Started");
+        //Main.clients = new ArrayList<>();
+        //Main.clientSockets = new ArrayList<>();
         try {
             serverSocket = new ServerSocket(Resources.SocketServerPort);
             Main.varshandler.socketserverIsRunning = true;
@@ -28,8 +27,13 @@ public class SocketServer implements Runnable {
 
         try {
             while (Main.varshandler.socketserverIsRunning) {
+
                 Socket socket = serverSocket.accept();
 
+                Main.waitlist.add(socket);
+                Main.logger.debug("Received new Client, put him to Waitlist...");
+
+                /*
                 Main.clientSockets.add(socket);
 
                 int clientID = -1;
@@ -43,6 +47,7 @@ public class SocketServer implements Runnable {
                 Thread t = new Thread(c, "CliendID:" + clientID);
                 t.start();
                 Main.clients.add(c);
+            */
             }
         } catch (Exception e) {
             Main.logger.error("error connecting client.");
