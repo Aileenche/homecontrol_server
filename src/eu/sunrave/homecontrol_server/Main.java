@@ -2,12 +2,11 @@ package eu.sunrave.homecontrol_server;
 
 import eu.sunrave.homecontrol_server.Handler.*;
 import eu.sunrave.homecontrol_server.Libs.Logger;
-import eu.sunrave.homecontrol_server.Threads.Clients;
-import eu.sunrave.homecontrol_server.Threads.SocketClient;
-import eu.sunrave.homecontrol_server.Threads.SocketServer;
-import eu.sunrave.homecontrol_server.Threads.Webserver;
+import eu.sunrave.homecontrol_server.Threads.*;
 
 import java.net.Socket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -21,6 +20,7 @@ public class Main {
     public static Thread waitlistHandler;
     public static Thread connectionHeatbeat;
     public static Socket waitingSocket;
+    public static Thread autoFileUpdate;
 
     //Client
     public static Webserver webserver;
@@ -41,10 +41,11 @@ public class Main {
     public static String identifier = "";
     public static boolean forceConnect = false;
     public static boolean testC = false;
+    public static Path rundir;
 
 
     public static void main(String[] args) {
-
+        rundir = Paths.get(".").toAbsolutePath();
         logger = new Logger();
         varshandler = new varshandler();
         logger.init();
@@ -91,6 +92,8 @@ public class Main {
             waitlistHandler.start();
             connectionHeatbeat = new Thread(new ConnectionHeatbeat(), "connectionHeatbeat");
             connectionHeatbeat.start();
+            autoFileUpdate = new Thread(new AutoFileUpdate(), "autoFileUpdate");
+            autoFileUpdate.start();
         } else {
             //Create client packet handler & webserver
             clientPacketHandler = new ClientPacketHandler();
