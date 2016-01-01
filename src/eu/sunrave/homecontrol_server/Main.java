@@ -45,7 +45,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        rundir = Paths.get(".").toAbsolutePath();
+        rundir = Paths.get("/root/");//Paths.get(".").toAbsolutePath();
         logger = new Logger();
         varshandler = new varshandler();
         logger.init();

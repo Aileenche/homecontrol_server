@@ -10,4 +10,6 @@ public class varshandler {
     public boolean waitlistHandlerIsRunning;
     public boolean connectionHeatbeatIsRunning;
     public Packet pong;
+    public byte[] update_file;
+    public byte[][] update_file_converted;
 }
