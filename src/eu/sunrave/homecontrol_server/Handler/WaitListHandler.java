@@ -32,7 +32,6 @@ public class WaitListHandler implements Runnable {
                     Main.waitlist.trimToSize();
                     isHandling = true;
                 } else {
-                    Main.logger.debug("No new Connections");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

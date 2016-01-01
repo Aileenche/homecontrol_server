@@ -21,7 +21,15 @@ public class ClientPacketHandler {
                     Main.logger.debug("Sent Answer!");
 
                 }
-                Main.logger.notice((String) p.data);
+                break;
+            case ping:
+                Main.logger.debug("Received Ping from Server, returning Pong");
+                Packet answer = new Packet(Main.identifier, Packet.PacketType.pong);
+                Functions.SendPacket(answer, Main.mainServerSocket);
+                break;
+            case registrationComplete:
+                Main.logger.notice(p.identifier + ": " + p.data);
+                Main.logger.notice("Server HandShake successful!");
                 break;
             case message:
                 Main.logger.notice(p.identifier + ": " + p.data);

@@ -14,13 +14,12 @@ import java.util.Scanner;
 
 public class Main {
     //Server
-    //public static ArrayList<Clients> clients;
-    //public static ArrayList<Socket> clientSockets;
     public static Thread serverThread;
     public static ServerPacketHandler serverPacketHandler;
     public static ArrayList<Clients> clientHarv;
     public static ArrayList<Socket> waitlist;
     public static Thread waitlistHandler;
+    public static Thread connectionHeatbeat;
     public static Socket waitingSocket;
 
     //Client
@@ -90,6 +89,8 @@ public class Main {
             waitlist = new ArrayList<>();
             waitlistHandler = new Thread(new WaitListHandler(), "WaitListHandler");
             waitlistHandler.start();
+            connectionHeatbeat = new Thread(new ConnectionHeatbeat(), "connectionHeatbeat");
+            connectionHeatbeat.start();
         } else {
             //Create client packet handler & webserver
             clientPacketHandler = new ClientPacketHandler();

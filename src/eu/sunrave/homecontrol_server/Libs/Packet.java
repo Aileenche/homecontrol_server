@@ -20,6 +20,6 @@ public class Packet implements Serializable {
     public enum PacketType {
         registration,
         command,
-        message, data
+        message, registrationComplete, ping, pong, data
     }
 }

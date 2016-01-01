@@ -22,7 +22,6 @@ public class SocketClient implements Runnable {
                 IR.read(data);
                 Packet p = (Packet) Functions.deserialize(data);
                 Main.clientPacketHandler.handle(p);
-
             } catch (Exception e) {
                 Main.logger.notice("Disconnected...");
                 Main.logger.notice("Atempting to reconnect...");
@@ -47,7 +46,7 @@ public class SocketClient implements Runnable {
                     } else {
                         if (counter % 60 == 0) {
                             reconnectintval += 500;
-                            Main.logger.debug("Increased reconnect interval to " + reconnectintval);
+                            Main.logger.notice("Increased reconnect interval to " + reconnectintval);
                         }
                         Main.logger.debug("Failed to reconnect to server");
                     }

@@ -14,7 +14,7 @@ public class ServerPacketHandler {
     public static void handle(Packet p, Clients client) {
         switch (p.pakettype) {
             case registration:
-                Packet pack = new Packet(Main.identifier, PacketType.registration);
+                Packet pack = new Packet(Main.identifier, PacketType.registrationComplete);
                 pack.data = "Welcome to the server " + client.identifier;
                 Functions.SendPacket(pack, client.socket);
                 break;
@@ -46,6 +46,9 @@ public class ServerPacketHandler {
                 break;
             case message:
                 Main.logger.notice(p.identifier + ": " + p.data);
+                break;
+            case pong:
+                Main.varshandler.pong = p;
                 break;
             case data:
                 //TODO handle client data when it sends stuff to the server
