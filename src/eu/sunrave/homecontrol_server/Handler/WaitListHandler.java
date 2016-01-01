@@ -48,7 +48,6 @@ public class WaitListHandler implements Runnable {
                     Main.waitingSocket.setSoTimeout(0);
                     Clients c = new Clients(Main.waitingSocket, p.identifier);
                     c.isRegistered = true;
-                    Main.logger.debug("p.data=" + p.data);
                     if (Functions.checkDoubleIdentifier(p.identifier)) {
                         if (p.data == null) {
                             p.data = "";
