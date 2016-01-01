@@ -41,6 +41,9 @@ public class SocketClient implements Runnable {
                         if (Main.forceConnect) {
                             p.data = "force";
                         }
+                        if (Main.clientType != null) {
+                            p.clientType = Main.clientType;
+                        }
                         Functions.SendPacket(p, Main.mainServerSocket);
                         break;
                     } else {

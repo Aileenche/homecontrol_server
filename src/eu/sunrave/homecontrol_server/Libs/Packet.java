@@ -10,6 +10,7 @@ public class Packet implements Serializable {
 
     public String identifier;
     public PacketType pakettype;
+    public ClientType clientType;
     public int number;
     public Object data;
 
@@ -19,8 +20,6 @@ public class Packet implements Serializable {
     }
 
     public enum PacketType {
-        registration,
-        command,
-        message, registrationComplete, ping, pong, data, file, file_start, file_end
+        registration, command, message, registrationComplete, ping, pong, data, file, file_start, file_end
     }
 }

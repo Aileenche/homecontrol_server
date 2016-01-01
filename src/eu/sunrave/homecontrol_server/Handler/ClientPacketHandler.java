@@ -17,12 +17,14 @@ public class ClientPacketHandler {
                 if (p.data.toString().equals("whoareyou")) {
                     Main.logger.debug("Received whoareyou from Server, Prepair and send Answer...");
                     Packet answer = new Packet(Main.identifier, Packet.PacketType.registration);
+                    if (Main.clientType != null) {
+                        answer.clientType = Main.clientType;
+                    }
                     if (Main.forceConnect) {
                         p.data = "force";
                     }
                     Functions.SendPacket(answer, Main.mainServerSocket);
                     Main.logger.debug("Sent Answer!");
-
                 }
                 break;
             case ping:
@@ -31,8 +33,7 @@ public class ClientPacketHandler {
                 Functions.SendPacket(answer, Main.mainServerSocket);
                 break;
             case registrationComplete:
-                Main.logger.notice(p.identifier + ": " + p.data);
-                Main.logger.notice("Server HandShake successful!");
+                Main.logger.notice(p.identifier + ": " + p.data + " -> Server HandShake successful!");
                 break;
             case message:
                 Main.logger.notice(p.identifier + ": " + p.data);

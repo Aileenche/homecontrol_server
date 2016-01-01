@@ -47,6 +47,10 @@ public class WaitListHandler implements Runnable {
                     Packet p = (Packet) Functions.deserialize(data);
                     Main.waitingSocket.setSoTimeout(0);
                     Clients c = new Clients(Main.waitingSocket, p.identifier);
+                    if (p.clientType != null) {
+                        c.clientType = p.clientType;
+                        Main.logger.debug("Registering " + c.identifier + " as " + c.clientType);
+                    }
                     c.isRegistered = true;
                     if (Functions.checkDoubleIdentifier(p.identifier)) {
                         if (p.data == null) {
@@ -69,7 +73,7 @@ public class WaitListHandler implements Runnable {
                     }
                     Thread t = new Thread(c, "identifier-" + c.identifier);
                     t.start();
-                    Packet packet = new Packet(Main.identifier, Packet.PacketType.message);
+                    Packet packet = new Packet(Main.identifier, Packet.PacketType.registrationComplete);
                     packet.data = "Welcome to the Server " + c.identifier;
                     Functions.SendPacket(packet, Main.waitingSocket);
                     Main.clientHarv.set(i, c);

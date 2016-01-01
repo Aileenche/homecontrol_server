@@ -1,6 +1,7 @@
 package eu.sunrave.homecontrol_server;
 
 import eu.sunrave.homecontrol_server.Handler.*;
+import eu.sunrave.homecontrol_server.Libs.ClientType;
 import eu.sunrave.homecontrol_server.Libs.Logger;
 import eu.sunrave.homecontrol_server.Threads.*;
 
@@ -28,6 +29,8 @@ public class Main {
     public static Socket mainServerSocket;
     public static Thread clientThread;
     public static ClientPacketHandler clientPacketHandler;
+    public static ClientType clientType;
+    public static Thread mediaplayer;
 
     //All
     public static varshandler varshandler;
@@ -55,6 +58,12 @@ public class Main {
             if (args[i] != null) {
                 if (args[i].equals("-force")) {
                     forceConnect = true;
+                    args[i] = null;
+                } else if (args[i].equals("-pi")) {
+                    clientType = ClientType.pi;
+                    args[i] = null;
+                } else if (args[i].equals("-php")) {
+                    clientType = ClientType.php;
                     args[i] = null;
                 } else if (args[i].equals("-testc")) {
                     testC = true;
@@ -99,6 +108,8 @@ public class Main {
             clientPacketHandler = new ClientPacketHandler();
             //webserver = new Webserver("Webserver");
             //webserver.start();
+            //mediaplayer = new Thread(new MediaPlayer(),"MediaPlayer");
+            //mediaplayer.start();
 
             //Attempt to connect to the server
             try {
@@ -110,13 +121,6 @@ public class Main {
             socketClient = new SocketClient();
             clientThread = new Thread(socketClient);
             clientThread.start();
-
-            //Send Registration To Server
-            //Packet p = new Packet(identifier, Packet.PacketType.registration);
-            //if (forceConnect) {
-            //    p.data = "force";
-            //}
-            //Functions.SendPacket(p, mainServerSocket);
         }
 
 
@@ -138,6 +142,8 @@ public class Main {
 
     public static void shutdown() {
         if (isserver) {
+            String[] splitted = "bc SERVER IS RESTARTING!".split(" ");
+            Commands.make(splitted);
             serverThread.interrupt();
         } else {
             clientThread.interrupt();
